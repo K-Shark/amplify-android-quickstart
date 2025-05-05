@@ -1,9 +1,11 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 
 const schema = a.schema({
+  /*
+   * User - Private user information, not publicly accessible.
+   */
   User: a
       .model({
-        userId: a.id().required(),
         address: a.customType({
           country: a.string().required(), // Could be an enum
           addressLine1: a.string().required(),
@@ -12,15 +14,17 @@ const schema = a.schema({
           state: a.string(),
           zipCode: a.string(),
         }),
-        profileId: a.id(),
-        profile: a.hasOne('Profile', 'profileId'),
+        profile: a.hasOne('Profile', 'userId')
       }).authorization((allow) => [
         // Allow only signed-in users to create, read, update, and delete their user information.
         allow.owner()
       ]),
+  /*
+   * Profile - Public user information.
+   */
   Profile: a
       .model({
-        profileId: a.id().required(),
+        userId: a.id().required().authorization((allow) => [allow.owner()]),
         name: a.string().required(),
         media: a.string().array(), // Pictures/Videos
         location: a.customType({
@@ -29,6 +33,7 @@ const schema = a.schema({
           state: a.string(),
         }),
         posts: a.hasMany('Post', 'postId'),
+        user: a.belongsTo('User', 'userId').authorization((allow) => [allow.owner()])
       })
       .authorization((allow) => [
         // Allow anyone logged into the app to read everyone's profile.
@@ -36,9 +41,11 @@ const schema = a.schema({
         // Allow signed-in user to create, read, update, and delete their own profile.
         allow.owner()
       ]),
+  /*
+   * Post - A public message, associated with a Proflie.
+   */
   Post: a
       .model({
-        postId: a.id().required(),
         name: a.string(),
         message: a.string(),
         image: a.string(),
