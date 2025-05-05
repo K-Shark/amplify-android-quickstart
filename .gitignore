@@ -5,3 +5,6 @@ amplifyconfiguration*
 
 # node modules
 node_modules
+
+# IntelliJ
+.idea/
