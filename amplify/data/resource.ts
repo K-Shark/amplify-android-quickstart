@@ -32,7 +32,7 @@ const schema = a.schema({
           city: a.string(),
           state: a.string(),
         }),
-        posts: a.hasMany('Post', 'postId'),
+        posts: a.hasMany('Post', 'profileId'),
         user: a.belongsTo('User', 'userId').authorization((allow) => [allow.owner()])
       })
       .authorization((allow) => [
