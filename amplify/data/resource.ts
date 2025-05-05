@@ -6,6 +6,7 @@ const schema = a.schema({
    */
   User: a
       .model({
+        userId: a.id().required(),
         address: a.customType({
           country: a.string().required(), // Could be an enum
           addressLine1: a.string().required(),
@@ -15,7 +16,9 @@ const schema = a.schema({
           zipCode: a.string(),
         }),
         profile: a.hasOne('Profile', 'userId')
-      }).authorization((allow) => [
+      })
+      .identifier(['userId'])
+      .authorization((allow) => [
         // Allow only signed-in users to create, read, update, and delete their user information.
         allow.owner()
       ]),
