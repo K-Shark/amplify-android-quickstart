@@ -12,6 +12,7 @@ const schema = a.schema({
           state: a.string(),
           zipCode: a.string(),
         }),
+        profileId: a.id(),
         profile: a.hasOne('Profile', 'profileId'),
       }).authorization((allow) => [
         // Allow only signed-in users to create, read, update, and delete their user information.
@@ -28,10 +29,6 @@ const schema = a.schema({
           state: a.string(),
         }),
         posts: a.hasMany('Post', 'postId'),
-        user: a.belongsTo('User', "userId").authorization((allow) => [
-          // Only the owner can see this relationship.
-          allow.owner()
-        ])
       })
       .authorization((allow) => [
         // Allow anyone logged into the app to read everyone's profile.
@@ -45,6 +42,7 @@ const schema = a.schema({
         name: a.string(),
         message: a.string(),
         image: a.string(),
+        profileId: a.id().required(),
         profile: a.belongsTo('Profile', 'profileId')
       })
       .authorization((allow) => [
