@@ -24,7 +24,7 @@ const schema = a.schema({
    */
   Profile: a
       .model({
-        userId: a.id().required().authorization((allow) => [allow.owner()]),
+        userId: a.id().authorization((allow) => [allow.owner()]),
         name: a.string().required(),
         media: a.string().array(), // Pictures/Videos
         location: a.customType({
