@@ -15,7 +15,6 @@ const schema = a.schema({
           state: a.string(),
           zipCode: a.string(),
         }),
-        profile: a.hasOne('Profile', 'userId')
       })
       .identifier(['userId'])
       .authorization((allow) => [
@@ -27,7 +26,7 @@ const schema = a.schema({
    */
   Profile: a
       .model({
-        userId: a.id().authorization((allow) => [allow.owner()]),
+        profileId: a.id().required(),
         name: a.string().required(),
         media: a.string().array(), // Pictures/Videos
         location: a.customType({
@@ -36,9 +35,8 @@ const schema = a.schema({
           state: a.string(),
         }),
         posts: a.hasMany('Post', 'profileId'),
-        user: a.belongsTo('User', 'userId').authorization((allow) => [allow.owner()])
       })
-      .secondaryIndexes((index) => [index("userId")])
+      .identifier(['profileId'])
       .authorization((allow) => [
         // Allow anyone logged into the app to read everyone's profile.
         allow.authenticated().to(['read']),
