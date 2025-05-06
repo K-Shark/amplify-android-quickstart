@@ -38,6 +38,7 @@ const schema = a.schema({
         posts: a.hasMany('Post', 'profileId'),
         user: a.belongsTo('User', 'userId').authorization((allow) => [allow.owner()])
       })
+      .secondaryIndexes((index) => [index("userId")])
       .authorization((allow) => [
         // Allow anyone logged into the app to read everyone's profile.
         allow.authenticated().to(['read']),
